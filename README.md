@@ -10,8 +10,16 @@ This is supposed to be a small maps application.
 
 Planned features (TODO list):
 * Management of GPX files
+  * Upload of GPX files
+  * Automatic and manual tagging of GPX files
 * Adding your own tracks
-* Customizing markers and colors of shown GPX tracks
+  * Add a mode to the map (viewing, add new track)
+  * Capture clicks on map, and add appropriate markers and lines
+  * Save the resulting GPX in the end
+* Enhance showing of GPX:
+  * Customizing markers and colors of shown GPX tracks
+  * DONE Show lines between track points
+  * DONE Show markers only at beginning and end of track
 * Stand-alone mode: create a docker image that contains the whole application,
   including the tiles cache
 * Add customizing of tiles cache (maximum age of tiles, maximum size of cache)

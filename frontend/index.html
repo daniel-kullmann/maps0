@@ -4,7 +4,7 @@
         <meta charset="utf-8"/>
         <link rel="stylesheet" href="./css/leaflet.css" crossorigin=""/>
         <script src="./js/jquery.js"></script>
-        <script src="./js/leaflet.js" crossorigin=""></script>
+        <script src="./js/leaflet-src.js" crossorigin=""></script>
         <script src="./code.js">
         </script>
     </head>
@@ -12,6 +12,8 @@
         <div id="sidebar" style="width: 200px; display: inline;">
             <span id="error-message" style="text-color: red;" />
             <span id="info-message"/>
+            <button onClick="bound_map_by_gpx_tracks();">Show all checked tracks on map</button>
+            <button onClick="load_gpx_track_list();">Reload list of known GPX tracks</button>
             <div id="gpx-list"/>
         </div>
         <div style="display: inline;">

@@ -30,6 +30,8 @@ def get_tile(request,s,z,x,y):
         os.makedirs(dirname, exist_ok=True)
         with open(filename, "wb") as fh:
             fh.write(png)
+    # TODO: read headers like e-tag and max-cache-age, and store them together
+    # with the file, along with info like last-update-date-time
     response = HttpResponse(png, content_type='image/png')
     response['Access-Control-Allow-Origin'] = '*'
     return response
