@@ -138,6 +138,11 @@ function load_gpx_track_list() {
     });
 }
 
+function mouse_has_moved(event) {
+    var msg = "Mouse: " + event.latlng.lat.toFixed(3) + ", " + event.latlng.lng.toFixed(3);
+    $("#location-info").text(msg);
+}
+
 
 $(document).ready(function() {
 
@@ -152,6 +157,8 @@ $(document).ready(function() {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 	      crossOrigin: true
     }).addTo(map);
+
+    map.on('mousemove', mouse_has_moved);
 
     load_gpx_track_list();
 
