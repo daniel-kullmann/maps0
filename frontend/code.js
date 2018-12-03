@@ -34,22 +34,40 @@ function pick_color() {
     return colors[lowest][0];
 }
 
-lat_min = 35;
-lat_max = 60;
-lon_min = -11;
-lon_max = 21;
+var lat_min = 35;
+var lat_max = 60;
+var lon_min = -11;
+var lon_max = 21;
+var lat = lat_min;
+var lon = lon_min;
+var zoom_min = 11;
+var zoom_max = 16;
+var zoom = zoom_min;
+
 function random_walk() {
-    lat = lat_min + Math.random()*(lat_max-lat_min);
-    lon = lon_min + Math.random()*(lon_max-lon_min);
-    zoom = 11 + Math.round(Math.random()*3);
     var msg = "random walk to: " + lat.toFixed(3) + ", " + lon.toFixed(3) + ", " + zoom;
     $("#random-walk-info").text(msg);
     map.setView(L.latLng(lat, lon), zoom);
+    if (zoom == zoom_max) {
+        zoom = zoom_min;
+        if (lat >= lat_max) {
+            if (lon >= lon_max) {
+                toggle_random_walk(false);
+            } else {
+                lon += 1;
+            }
+        } else {
+            lat += 1;
+        }
+    } else {
+        zoom += 1;
+    }
 }
 var random_walk_id = null;
 function toggle_random_walk(enable) {
     if (enable) {
-        random_walk_id = setInterval(random_walk, 5000);
+        random_walk_id = setInterval(random_walk, 2000);
+        random_walk();
     } else {
         clearInterval(random_walk_id);
         $("#random-walk-info").text("");
