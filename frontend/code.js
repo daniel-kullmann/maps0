@@ -54,10 +54,10 @@ function random_walk() {
             if (lon >= lon_max) {
                 toggle_random_walk(false);
             } else {
-                lon += 1;
+                lon += 0.1;
             }
         } else {
-            lat += 1;
+            lat += 0.1;
         }
     } else {
         zoom += 1;
