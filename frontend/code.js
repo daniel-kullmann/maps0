@@ -47,7 +47,6 @@ function random_walk() {
 }
 var random_walk_id = null;
 function enable_random_walk(flag) {
-    console.log("enable_random_walk: " + flag);
     if (flag) {
         random_walk_id = setInterval(random_walk, 5000);
     } else {
