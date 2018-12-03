@@ -45,6 +45,54 @@ var zoom_max = 16;
 var zoom = zoom_min;
 
 function random_walk() {
+var track_in_creation = null;
+
+function mouse_click_handler(event) {
+    track_in_creation.points.push(event.latlng);
+    var number = track_in_creation.points.length;
+    if (number > 1) {
+        track_in_creation.distance += map.distance(
+            track_in_creation.points[number-1],
+            track_in_creation.points[number-2]
+        );
+        $("#track-in-creation-distance").text(track_in_creation.distance.toFixed(2) + "m");
+    }
+    if (track_in_creation.poly_line) {
+        track_in_creation.poly_line.remove();
+    }
+    track_in_creation.poly_line = L.polyline(track_in_creation.points, {color: 'black'});
+    track_in_creation.poly_line.addTo(map);
+}
+
+function start_track_creation() {
+    track_in_creation = {
+        name: "unnamed track",
+        points: [],
+        poly_line: null,
+        distance: 0
+    };
+    $("#start-track-creation").css("display", "none");
+    $("#stop-track-creation").css("display", "inline");
+    $('[name="track-in-creation-name"]').css("display", "inline");
+    $('[name="track-in-creation-name"]').attr("value", track_in_creation.name);
+    $("#track-in-creation-distance").css("display", "inline");
+    $("#track-in-creation-distance").text(track_in_creation.distance.toFixed(2) + "m");
+    map.on("click", mouse_click_handler);
+}
+
+function stop_track_creation() {
+    $("#start-track-creation").css("display", "inline");
+    $("#stop-track-creation").css("display", "none");
+    $('[name="track-in-creation-name"]').css("display", "none");
+    $("#track-in-creation-distance").css("display", "none");
+    map.off("click", mouse_click_handler);
+    if (track_in_creation.poly_line) {
+        track_in_creation.poly_line.remove();
+    }
+    console.log(track_in_creation);
+    track_in_creation = null;
+}
+
     var msg = "random walk to: " + lat.toFixed(3) + ", " + lon.toFixed(3) + ", " + zoom;
     $("#random-walk-info").text(msg);
     map.setView(L.latLng(lat, lon), zoom);
