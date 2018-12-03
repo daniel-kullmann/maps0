@@ -154,6 +154,15 @@ function mouse_has_moved(event) {
     $("#location-info").text(msg);
 }
 
+function map_info_has_changed(e) {
+    var bounds = map.getBounds();
+    var msg = "N: " + bounds.getNorth().toFixed(2) +
+        ", S: " + bounds.getSouth().toFixed(2) +
+        ", W: " + bounds.getWest().toFixed(2) +
+        ", E: " + bounds.getEast().toFixed(2) +
+        ", Z: " + map.getZoom().toFixed(0);
+    $("#map-info").text(msg);
+}
 
 $(document).ready(function() {
 
@@ -167,6 +176,8 @@ $(document).ready(function() {
     var sidebar = L.control.sidebar('sidebar').addTo(map);
 
     map.on('mousemove', mouse_has_moved);
+    map.on('zoom', map_info_has_changed);
+    map.on('move', map_info_has_changed);
 
     load_gpx_track_list();
 
