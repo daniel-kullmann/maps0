@@ -42,12 +42,13 @@ function random_walk() {
     lat = lat_min + Math.random()*(lat_max-lat_min);
     lon = lon_min + Math.random()*(lon_max-lon_min);
     zoom = 11 + Math.round(Math.random()*3);
-    $("#random-walk-info").text("random walk to: " + lat.toFixed(3) + ", " + lon.toFixed(3) + ", " + zoom);
+    var msg = "random walk to: " + lat.toFixed(3) + ", " + lon.toFixed(3) + ", " + zoom;
+    $("#random-walk-info").text(msg);
     map.setView(L.latLng(lat, lon), zoom);
 }
 var random_walk_id = null;
-function enable_random_walk(flag) {
-    if (flag) {
+function toggle_random_walk(enable) {
+    if (enable) {
         random_walk_id = setInterval(random_walk, 5000);
     } else {
         clearInterval(random_walk_id);
@@ -146,17 +147,14 @@ function mouse_has_moved(event) {
 
 $(document).ready(function() {
 
-    $("#map").css({
-        width: $(window).width()-200,
-        height: $(window).height()
-    });
-
     map = L.map('map').setView([37.31915, -8.8033], 13);
 
     L.tileLayer('http://localhost:8000/api/tiles/{s}/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 	      crossOrigin: true
     }).addTo(map);
+
+    var sidebar = L.control.sidebar('sidebar').addTo(map);
 
     map.on('mousemove', mouse_has_moved);
 
