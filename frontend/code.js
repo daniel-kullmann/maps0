@@ -51,6 +51,7 @@ function enable_random_walk(flag) {
         random_walk_id = setInterval(random_walk, 5000);
     } else {
         clearInterval(random_walk_id);
+        $("#random-walk-info").text("");
     }
 }
 
