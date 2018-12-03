@@ -44,7 +44,6 @@ var zoom_min = 11;
 var zoom_max = 16;
 var zoom = zoom_min;
 
-function random_walk() {
 var track_in_creation = null;
 
 function mouse_click_handler(event) {
@@ -93,14 +92,15 @@ function stop_track_creation() {
     track_in_creation = null;
 }
 
+function map_scan() {
     var msg = "random walk to: " + lat.toFixed(3) + ", " + lon.toFixed(3) + ", " + zoom;
-    $("#random-walk-info").text(msg);
+    $("#map-scan-info").text(msg);
     map.setView(L.latLng(lat, lon), zoom);
     if (zoom == zoom_max) {
         zoom = zoom_min;
         if (lat >= lat_max) {
             if (lon >= lon_max) {
-                toggle_random_walk(false);
+                toggle_map_scan(false);
             } else {
                 lon += 0.1;
             }
@@ -111,14 +111,14 @@ function stop_track_creation() {
         zoom += 1;
     }
 }
-var random_walk_id = null;
-function toggle_random_walk(enable) {
+var map_scan_id = null;
+function toggle_map_scan(enable) {
     if (enable) {
-        random_walk_id = setInterval(random_walk, 2000);
-        random_walk();
+        map_scan_id = setInterval(map_scan, 2000);
+        map_scan();
     } else {
-        clearInterval(random_walk_id);
-        $("#random-walk-info").text("");
+        clearInterval(map_scan_id);
+        $("#map-scan-info").text("");
     }
 }
 

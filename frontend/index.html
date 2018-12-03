@@ -30,7 +30,7 @@
                     <span id="error-message" style="text-color: red;"></span><br/>
                     <span id="map-info"></span><br/>
                     <span id="location-info"></span><br/>
-                    <span id="random-walk-info"></span>
+                    <span id="map-scan-info"></span><br/>
                     <button id="start-track-creation" onClick="start_track_creation()">Create new GPX track..</button>
                     <button id="stop-track-creation" onClick="stop_track_creation()" style="display: none;">Finish GPX track..</button><br/>
                     <input type="text" name="track-in-creation-name" size="10" style="display: none;"/><br/>
@@ -42,7 +42,7 @@
                     <span id="gpx-list"/>
                 </div>
                 <div class="sidebar-pane" id="settings">
-                    <input type="checkbox" onClick="toggle_random_walk(this.checked);"/>Random walk
+                    <input type="checkbox" onClick="toggle_map_scan(this.checked);"/>Map scan
                 </div>
             </div>
         </div>
