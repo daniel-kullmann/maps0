@@ -34,6 +34,28 @@ function pick_color() {
     return colors[lowest][0];
 }
 
+lat_min = 35;
+lat_max = 60;
+lon_min = -11;
+lon_max = 21;
+function random_walk() {
+    lat = lat_min + Math.random()*(lat_max-lat_min);
+    lon = lon_min + Math.random()*(lon_max-lon_min);
+    zoom = 11 + Math.round(Math.random()*3);
+    $("#random-walk-info").text("random walk to: " + lat.toFixed(3) + ", " + lon.toFixed(3) + ", " + zoom);
+    map.setView(L.latLng(lat, lon), zoom);
+}
+var random_walk_id = null;
+function enable_random_walk(flag) {
+    console.log("enable_random_walk: " + flag);
+    if (flag) {
+        random_walk_id = setInterval(random_walk, 5000);
+    } else {
+        clearInterval(random_walk_id);
+    }
+}
+
+
 function show_gpx_file(show, file) {
     if (show) {
         $.ajax({

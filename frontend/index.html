@@ -14,6 +14,8 @@
             <span id="info-message"/>
             <button onClick="bound_map_by_gpx_tracks();">Show all checked tracks on map</button>
             <button onClick="load_gpx_track_list();">Reload list of known GPX tracks</button>
+            <input type="checkbox" onClick="enable_random_walk(this.checked);"/>Random walk
+            <span id="random-walk-info"></span>
             <div id="gpx-list"/>
         </div>
         <div style="display: inline;">
