@@ -164,6 +164,11 @@ function map_info_has_changed(e) {
     $("#map-info").text(msg);
 }
 
+function tile_error(e) {
+    var msg = "tile error: " + e.coords.x + ", " + e.coords.y;
+    $("#error-message").text(msg);
+}
+
 $(document).ready(function() {
 
     map = L.map('map').setView([37.31915, -8.8033], 13);
@@ -178,6 +183,7 @@ $(document).ready(function() {
     map.on('mousemove', mouse_has_moved);
     map.on('zoom', map_info_has_changed);
     map.on('move', map_info_has_changed);
+    map.on('tileerror', tile_error);
 
     load_gpx_track_list();
 
