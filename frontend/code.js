@@ -68,15 +68,23 @@ function show_gpx_file(show, file) {
                 var points = data.getElementsByTagName('trkpt');
                 var markers = [];
                 var line_coordinates = [];
-                for (i=0; i<points.length; i++) {
+                var distance = 0;
+                var lastLatLon = null;
+                for (var i=0; i<points.length; i++) {
                     var attr = points.item(i).attributes;
                     var lat = attr.getNamedItem("lat").value;
                     var lon = attr.getNamedItem("lon").value;
+
                     line_coordinates.push([lat,lon]);
                     if (i==0 || i == points.length-1) {
                         var r = L.marker([lat, lon]).addTo(map);
                         markers.push(r);
                     }
+                    var latLon = L.latLng(lat, lon);
+                    if (i>0) {
+                        distance += map.distance(lastLatLon, latLon);
+                    }
+                    lastLatLon = latLon;
                 }
                 var poly_line = L.polyline(line_coordinates, {color: color});
                 poly_line.addTo(map);
@@ -84,8 +92,10 @@ function show_gpx_file(show, file) {
                     file: file,
                     markers: markers,
                     poly_line: poly_line,
+                    distance: distance,
                     bounds: poly_line.getBounds()
                 });
+                $('[name="track-'+file+'"]').text("(" + distance.toFixed(3) + "m)");
             },
             error: function(request, textStatus, error) {
                 $("#error-message").text(error);
@@ -123,9 +133,9 @@ function load_gpx_track_list() {
                 if (gpx_files.find(function (f) { return f.file == e })) {
                     text += " checked";
                 }
-                text += ">";
+                text += "/>";
                 text += e;
-                text += "</a>";
+                text += "&nbsp;<span name=\"track-"+ e + "\"/>";
                 text += "</li>";
             });
             text += "</ul>";
