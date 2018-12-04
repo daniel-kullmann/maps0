@@ -9,6 +9,7 @@ This is supposed to be a small maps application.
 * Uses a tile cache (via a django app) so that offline usage is possible
 
 Planned features (TODO list):
+* Use React or another framework to better structure the code
 * Management of GPX files
   * Upload of GPX files
   * Automatic and manual tagging of GPX files
