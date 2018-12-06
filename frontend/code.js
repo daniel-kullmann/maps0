@@ -263,4 +263,7 @@ $(document).ready(function() {
 
     load_gpx_track_list();
 
+    $('[name="zoom_min"]').text(zoom_min);
+    $('[name="zoom_max"]').text(zoom_max);
+
 });
