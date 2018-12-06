@@ -117,6 +117,13 @@ function map_scan() {
 }
 function toggle_map_scan(enable) {
     if (enable) {
+        var bounds = map.getBounds();
+        var lat_min = Math.min(bounds.getSouth(), bounds.getNorth());
+        var lat_max = Math.max(bounds.getSouth(), bounds.getNorth());
+        var lon_min = Math.max(bounds.getEast(), bounds.getWest());
+        var lon_max = Math.max(bounds.getEast(), bounds.getWest());
+        var lat = lat_min;
+        var lon = lon_min;
         map_scan_id = setInterval(map_scan, 4000);
         map_scan();
     } else {
