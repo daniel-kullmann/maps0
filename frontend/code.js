@@ -127,7 +127,7 @@ function show_gpx_file(show, file) {
     if (show) {
         $.ajax({
             type: 'GET',
-            url: 'http://localhost:8000/api/gpx/get/' + file,
+            url: '/api/gpx/get/' + file,
             //data: {...},
             success: function(data, textStatus, request) {
                 var color = pick_color();
@@ -188,7 +188,7 @@ function show_gpx_file(show, file) {
 function load_gpx_track_list() {
     $.ajax({
         type: 'GET',
-        url: 'http://localhost:8000/api/gpx/',
+        url: '/api/gpx/',
         //data: {...},
         success: function(data, textStatus, request) {
             var text = "<ul>";
@@ -239,7 +239,7 @@ $(document).ready(function() {
 
     map = L.map('map').setView([37.31915, -8.8033], 13);
 
-    L.tileLayer('http://localhost:8000/api/tiles/{s}/{z}/{x}/{y}.png', {
+    L.tileLayer('/api/tiles/{s}/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 	      crossOrigin: true
     }).addTo(map);
