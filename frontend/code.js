@@ -34,16 +34,6 @@ function pick_color() {
     return colors[lowest][0];
 }
 
-var lat_min = 35;
-var lat_max = 60;
-var lon_min = -11;
-var lon_max = 21;
-var lat = lat_min;
-var lon = lon_min;
-var zoom_min = 11;
-var zoom_max = 16;
-var zoom = zoom_min;
-
 var track_in_creation = null;
 
 function mouse_click_handler(event) {
@@ -92,29 +82,42 @@ function stop_track_creation() {
     track_in_creation = null;
 }
 
+var lat_min = 36.91;
+var lat_max = 38.43;
+var lon_min = -9;
+var lon_max = -7.78;
+var lat = lat_min;
+var lon = lon_min;
+var zoom_min = 8;
+var zoom_max = 16;
+var zoom = zoom_min;
+var map_scan_id = null;
 function map_scan() {
+    map.setView(L.latLng(lat, lon), zoom);
+    var bounds = map.getBounds();
+    var width = 0.95*Math.abs(bounds.getWest() - bounds.getEast());
+    var height = 0.95*Math.abs(bounds.getNorth() - bounds.getSouth());
     var msg = "random walk to: " + lat.toFixed(3) + ", " + lon.toFixed(3) + ", " + zoom;
     $("#map-scan-info").text(msg);
-    map.setView(L.latLng(lat, lon), zoom);
-    if (zoom == zoom_max) {
-        zoom = zoom_min;
-        if (lat >= lat_max) {
-            if (lon >= lon_max) {
+    if (lat >= lat_max) {
+        lat = lat_min;
+        if (lon >= lon_max) {
+            lon = lon_min;
+            if (zoom == zoom_max) {
                 toggle_map_scan(false);
             } else {
-                lon += 0.1;
+                zoom += 1;
             }
         } else {
-            lat += 0.1;
+            lon += width;
         }
     } else {
-        zoom += 1;
+        lat += height;
     }
 }
-var map_scan_id = null;
 function toggle_map_scan(enable) {
     if (enable) {
-        map_scan_id = setInterval(map_scan, 2000);
+        map_scan_id = setInterval(map_scan, 4000);
         map_scan();
     } else {
         clearInterval(map_scan_id);
