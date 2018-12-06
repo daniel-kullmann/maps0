@@ -3,16 +3,20 @@
 # For some reason (load, probably), the OSM tile cache uses three different
 # servers for servng the tiles. I wanted to know what strategy is used to
 # decide which server is used.
-# 
-# My guess was that for a request for https://c.tile.openstreetmap.org/13/3895/3178.png,
-# server c is used because (3895+3178) modulo 3 == 2.
-# Those two last parts are the x and y positions of the tile, so:
+#
+# My guess was that for a request for
+#
+# https://c.tile.openstreetmap.org/13/3895/3178.png
+#
+# server c is used because (3895+3178) modulo 3 == 2. Those two last parts are
+# the x and y positions of the tile, so:
 # (x+y) % 3 == 0  => Use server a
 # (x+y) % 3 == 1  => Use server b
 # (x+y) % 3 == 2  => Use server c
 #
-# This piece of code verifies this guess.
-# You need a cache with some tiles under tile_cache/ to make this work
+# This piece of code verifies this guess. You need a cache with some tiles
+# under tile_cache/ to make this work.
+#
 
 import os
 
