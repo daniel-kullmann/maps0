@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
 uwsgi \
-  --chdir=$(dirname $0)/maps_backend \
+  --chdir=$(dirname $0)/../maps_backend \
   --module=maps_backend.wsgi:application \
   --env DJANGO_SETTINGS_MODULE=maps_backend.settings \
   --master \
