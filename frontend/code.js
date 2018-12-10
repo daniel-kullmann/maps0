@@ -9,7 +9,7 @@ var colors = [
 
 function bound_map_by_gpx_tracks() {
     if (gpx_files.length > 0) {
-        var all_bounds = gpx_files.map(function(e) { return e.bounds; });
+        var all_bounds = gpx_files.map(function(item) { return item.bounds; });
         var super_bounds = all_bounds.reduce(function(a,b) {return a.extend(b);});
         map.fitBounds(super_bounds);
     }
@@ -180,17 +180,17 @@ function show_gpx_file(show, file) {
             dataType: 'xml'
         });
     } else {
-        var gpx_file = gpx_files.find(function (e) { return e.file == file; });
+        var gpx_file = gpx_files.find(function (item) { return item.file == file; });
         if (gpx_file) {
             if (gpx_file.markers) {
-                gpx_file.markers.forEach(function(e) {
-                    e.remove();
+                gpx_file.markers.forEach(function(item) {
+                    item.remove();
                 });
             }
             if (gpx_file.poly_line) {
                 gpx_file.poly_line.remove();
             }
-            gpx_files = gpx_files.filter(function (e) { return e.file != file; });
+            gpx_files = gpx_files.filter(function (item) { return item.file != file; });
         }
     }
 }
@@ -202,16 +202,16 @@ function load_gpx_track_list() {
         //data: {...},
         success: function(data, textStatus, request) {
             var text = "<ul>";
-            data.forEach(function(e) {
+            data.forEach(function(track) {
                 text += "<li>";
                 text += "<input type=\"checkbox\" ";
-                text += "onClick=\"show_gpx_file(this.checked,'" + e + "');\"";
-                if (gpx_files.find(function (f) { return f.file == e })) {
+                text += "onClick=\"show_gpx_file(this.checked,'" + track + "');\"";
+                if (gpx_files.find(function (f) { return f.file == track })) {
                     text += " checked";
                 }
                 text += "/>";
-                text += e;
-                text += "&nbsp;<span name=\"track-"+ e + "\"/>";
+                text += track;
+                text += "&nbsp;<span name=\"track-"+ track + "\"/>";
                 text += "</li>";
             });
             text += "</ul>";
@@ -230,7 +230,7 @@ function mouse_has_moved(event) {
     $("#location-info").text(msg);
 }
 
-function map_info_has_changed(e) {
+function map_info_has_changed(event) {
     var bounds = map.getBounds();
     var msg = "N: " + bounds.getNorth().toFixed(2) +
         ", S: " + bounds.getSouth().toFixed(2) +
@@ -240,8 +240,8 @@ function map_info_has_changed(e) {
     $("#map-info").text(msg);
 }
 
-function tile_error(e) {
-    var msg = "tile error: " + e.coords.x + ", " + e.coords.y;
+function tile_error(event) {
+    var msg = "tile error: " + event.coords.x + ", " + event.coords.y;
     $("#error-message").text(msg);
 }
 
