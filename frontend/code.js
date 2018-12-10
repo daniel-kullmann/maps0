@@ -1,4 +1,5 @@
 var map = null;
+var tileLayer = null;
 var gpx_files = [];
 
 var colors = [
@@ -240,19 +241,109 @@ function map_info_has_changed(event) {
     $("#map-info").text(msg);
 }
 
+function load_content_if_necessary(event) {
+    if (event.id == 'settings') {
+        restore_settings();
+    }
+}
+
+function save_settings()  {
+    var settings = {
+        base_tile_url: get_settings_form_element('base_tile_url').value
+    };
+
+    $.ajax({
+        type: 'GET',
+        url: '/api/settings/token/',
+        success: function(data, textStatus, request) {
+            console.log(data.token);
+            settings.csrfmiddlewaretoken = data.token;
+            $.ajax({
+                type: 'POST',
+                url: '/api/settings/set_all_settings/',
+                data: settings,
+                success: function(data, textStatus, request) {
+                    // ignore
+                },
+                error: function(request, textStatus, error) {
+                    $("#error-message").text(error);
+                    //showError('Oops, there was a problem retrieving the comments.');
+                },
+                dataType: 'json'
+            });
+        },
+        error: function(request, textStatus, error) {
+            $("#error-message").text(error);
+            //showError('Oops, there was a problem retrieving the comments.');
+        },
+        dataType: 'json'
+    });
+
+    tileLayer.setUrl(settings.base_tile_url);
+}
+
+function restore_settings() {
+    $.ajax({
+        type: 'GET',
+        url: '/api/settings/',
+        //data: {...},
+        success: function(data, textStatus, request) {
+            if (!data.base_tile_url) {
+                data.base_tile_url = tileLayer._url;
+                if (!data.base_tile_url) {
+                    data.base_tile_url = '';
+                }
+            }
+            get_settings_form_element('base_tile_url').value = data.base_tile_url;
+        },
+        error: function(request, textStatus, error) {
+            $("#error-message").text(error);
+            //showError('Oops, there was a problem retrieving the comments.');
+        },
+        dataType: 'json'
+    });
+    console.log("Restore");
+}
+
 function tile_error(event) {
     var msg = "tile error: " + event.coords.x + ", " + event.coords.y;
     $("#error-message").text(msg);
 }
 
+function get_settings_form_element(name)  {
+    var form = $('form[name="settings"]')[0];
+    for (var i=0; i<form.length; i++) {
+        if (form[i].name == name) {
+            return form[i];
+        }
+    }
+}
+
+function choose_osm_as_tiles_url() {
+    var element = get_settings_form_element('base_tile_url');
+    element.value='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+}
+
+function choose_localhost_8000_as_tiles_url() {
+    var element = get_settings_form_element('base_tile_url');
+    element.value='http://localhost:8000/api/tiles/{s}/{z}/{x}/{y}.png';
+}
+
+function choose_this_server_as_tiles_url() {
+    var element = get_settings_form_element('base_tile_url');
+    element.value='/api/tiles/{s}/{z}/{x}/{y}.png';
+}
+
+
 $(document).ready(function() {
 
     map = L.map('map').setView([37.31915, -8.8033], 13);
 
-    L.tileLayer('/api/tiles/{s}/{z}/{x}/{y}.png', {
+    tileLayer = L.tileLayer('/api/tiles/{s}/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 	      crossOrigin: true
-    }).addTo(map);
+    });
+    tileLayer.addTo(map);
 
     var sidebar = L.control.sidebar('sidebar').addTo(map);
 
@@ -260,6 +351,7 @@ $(document).ready(function() {
     map.on('zoom', map_info_has_changed);
     map.on('move', map_info_has_changed);
     map.on('tileerror', tile_error);
+    sidebar.on('content', load_content_if_necessary);
 
     load_gpx_track_list();
 

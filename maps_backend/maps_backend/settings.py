@@ -25,7 +25,10 @@ SECRET_KEY = '5x^nae#s(8bx5oipph21wgu!c_xz17%+o%3_l0*+ze!0)#&0p('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['x220.local']
+ALLOWED_HOSTS = [
+    'localhost',
+    'x220.local',
+]
 
 
 # Application definition
@@ -38,6 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tiles',
+    'gpx_store',
+    'maps_settings',
+
 ]
 
 MIDDLEWARE = [
@@ -119,3 +125,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+CSRF_USE_SESSIONS = False
+

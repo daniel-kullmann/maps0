@@ -27,6 +27,11 @@
 
             <div class="sidebar-content">
                 <div class="sidebar-pane" id="home">
+                    <h1 class="sidebar-header">
+                        Info
+                        <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                    </h1>
+
                     <span id="error-message" style="text-color: red;"></span><br/>
                     <span id="map-info"></span><br/>
                     <span id="location-info"></span><br/>
@@ -37,12 +42,39 @@
                     <span id="track-in-creation-distance" style="display: none;"></span><br/>
                 </div>
                 <div class="sidebar-pane" id="tracks">
+                    <h1 class="sidebar-header">
+                        Tracks
+                        <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                    </h1>
+
                     <button onClick="bound_map_by_gpx_tracks();">Show all checked tracks on map</button>
                     <button onClick="load_gpx_track_list();">Reload list of known GPX tracks</button>
                     <span id="gpx-list"/>
                 </div>
                 <div class="sidebar-pane" id="settings">
+                    <h1 class="sidebar-header">
+                        Settings
+                        <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                    </h1>
+
                     <input type="checkbox" onClick="toggle_map_scan(this.checked);"/>Map scan of the displayed area (zoom: <span name="zoom_min"></span> - <span name="zoom_max"></span>)
+                    <h3>Persistent Settings</h3>
+                    <form name="settings" method="POST">
+                        <label for="base_tile_url">URL pattern for tiles</label>
+                        <input type="text" name="base_tile_url" size="30" />
+                        <br/>
+                        Presets for above:
+                        <select>
+                            <option>--</option>
+                            <option onClick="choose_osm_as_tiles_url();">OSM</option>
+                            <option onClick="choose_localhost_8000_as_tiles_url();">localhost:8000</option>
+                            <option onClick="choose_this_server_as_tiles_url();">on this server</option>
+                        </select>
+                        <br/>
+                        <button type="button" onClick="save_settings();" name="Submit">Submit</button>
+                        <button type="button" name="Cancel" onClick="restore_settings();">Cancel</button>
+                        <br/>
+                    </form>
                 </div>
             </div>
         </div>
