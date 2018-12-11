@@ -7,7 +7,7 @@ uwsgi \
   --master \
   --pidfile=$(dirname $0)/uwsgi.pid \
   --socket=127.0.0.1:9000 \
-  --processes=3 \
+  --processes=10 \
   --max-requests=5000 \
   --vacuum \
   --daemonize=$(dirname $0)/uwsgi.log
