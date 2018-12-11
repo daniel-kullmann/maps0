@@ -233,12 +233,10 @@ function mouse_has_moved(event) {
 
 function map_info_has_changed(event) {
     var bounds = map.getBounds();
-    var msg = "N: " + bounds.getNorth().toFixed(2) +
-        ", S: " + bounds.getSouth().toFixed(2) +
-        ", W: " + bounds.getWest().toFixed(2) +
-        ", E: " + bounds.getEast().toFixed(2) +
-        ", Z: " + map.getZoom().toFixed(0);
-    $("#map-info").text(msg);
+    var msg = bounds.getNorth().toFixed(2) + ", " + bounds.getWest().toFixed(2) +
+        " => " + bounds.getSouth().toFixed(2) + ", " + bounds.getEast().toFixed(2) +
+        "<br/>Zoom " + map.getZoom().toFixed(0);
+    $("#map-info").html(msg);
 }
 
 function load_content_if_necessary(event) {
