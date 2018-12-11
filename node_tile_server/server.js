@@ -52,7 +52,7 @@ http.createServer(function (req, res) {
 
         console.log(url + ': fetch from osm');
         var serverName = parts[0] + ".tile.openstreetmap.org";
-        var pathName = parts[1] + "/" + parts[2] + "/" + parts[3];
+        var pathName = '/' + parts[1] + "/" + parts[2] + "/" + parts[3];
         const options = {
             hostname: serverName,
             port: 443,
@@ -60,13 +60,11 @@ http.createServer(function (req, res) {
             method: 'GET'
         };
 
-        const req = https.request(options, (subres) => {
-            console.log('statusCode:', subres.statusCode);
-            console.log('headers:', subres.headers);
+        const subreq = https.request(options, (subres) => {
 
-            if (subres.status != 200) {
-                res.writeHead(status, {'Content-Type': 'text/plain'});
-                res.end('Status: ' + subres.status);
+            if (subres.statusCode != 200) {
+                res.writeHead(subres.statusCode, {'Content-Type': 'text/plain'});
+                res.end('Status: ' + subres.statusCode);
                 return;
             }
 
@@ -78,23 +76,25 @@ http.createServer(function (req, res) {
             res.writeHead(200, {'Content-Type': 'image/png'});
 
             subres.on('data', (data) => {
-                fs.write(fd, data);
+                console.log("Got data for " + fileName);
                 res.write(data);
+                fs.write(fd, data, nop);
             });
 
             subres.on('end', () => {
-                fs.close(fd, nop);
+                console.log("Finished " + fileName);
                 res.end();
+                fs.close(fd, nop);
             });
         });
 
-        req.on('error', (e) => {
+        subreq.on('error', (e) => {
             console.log("Error while fetching " + url + ":");
             console.error(e);
             res.writeHead(500, {'Content-Type': 'text/plain'});
             res.end('');
         });
-        req.end();
+        subreq.end();
     }
 }).listen(9911, 'localhost');
 console.log('Node Tile Server running at http://localhost:9911/');
