@@ -256,7 +256,6 @@ function save_settings()  {
         type: 'GET',
         url: '/api/settings/token/',
         success: function(data, textStatus, request) {
-            console.log(data.token);
             settings.csrfmiddlewaretoken = data.token;
             $.ajax({
                 type: 'POST',
@@ -302,7 +301,6 @@ function restore_settings() {
         },
         dataType: 'json'
     });
-    console.log("Restore");
 }
 
 function tile_error(event) {
