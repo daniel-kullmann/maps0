@@ -37,7 +37,7 @@ http.createServer(function (req, res) {
     if (fs.existsSync(fileName)) {
         fs.readFile(fileName, {}, (err, data) => {
             if (err) throw err;
-            console.log(url + ': locally cached');
+            console.log(new Date().toISOString() + ': ' + url + ': locally cached');
             res.writeHead(200, {'Content-Type': 'image/png'});
             res.write(data);
             res.end();
@@ -50,9 +50,9 @@ http.createServer(function (req, res) {
             return;
         }
 
-        console.log(url + ': fetch from osm');
-        var serverName = parts[0] + ".tile.openstreetmap.org";
-        var pathName = '/' + parts[1] + "/" + parts[2] + "/" + parts[3];
+        console.log(new Date().toISOString() + ': ' + url + ': fetch from osm');
+        var serverName = parts[0] + '.tile.openstreetmap.org';
+        var pathName = '/' + parts[1] + '/' + parts[2] + '/' + parts[3];
         const options = {
             hostname: serverName,
             port: 443,
@@ -76,20 +76,20 @@ http.createServer(function (req, res) {
             res.writeHead(200, {'Content-Type': 'image/png'});
 
             subres.on('data', (data) => {
-                console.log("Got data for " + fileName);
+                console.log(new Date().toISOString() + ': Got data for ' + fileName);
                 res.write(data);
                 fs.write(fd, data, nop);
             });
 
             subres.on('end', () => {
-                console.log("Finished " + fileName);
+                console.log(new Date().toISOString() + ': Finished ' + fileName);
                 res.end();
                 fs.close(fd, nop);
             });
         });
 
         subreq.on('error', (e) => {
-            console.log("Error while fetching " + url + ":");
+            console.log(new Date().toISOString() + ': Error while fetching ' + url + ':');
             console.error(e);
             res.writeHead(500, {'Content-Type': 'text/plain'});
             res.end('');
@@ -97,4 +97,4 @@ http.createServer(function (req, res) {
         subreq.end();
     }
 }).listen(9911, 'localhost');
-console.log('Node Tile Server running at http://localhost:9911/');
+console.log(new Date().toISOString() + ': Node Tile Server running at http://localhost:9911/');
