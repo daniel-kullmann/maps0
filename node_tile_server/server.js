@@ -26,6 +26,11 @@ function mkdirsSync(name) {
 function nop() {
 }
 
+function log(message) {
+    console.log(new Date().toISOString() + ': ' + message);
+}
+
+
 var CACHE_BASE_DIRECTORY = path.join(path.dirname(path.dirname(__filename)), 'tile_cache');
 if (!fs.existsSync(CACHE_BASE_DIRECTORY)) {
     fs.mkdirSync(CACHE_BASE_DIRECTORY);
@@ -37,7 +42,7 @@ http.createServer(function (req, res) {
     if (fs.existsSync(fileName)) {
         fs.readFile(fileName, {}, (err, data) => {
             if (err) throw err;
-            console.log(new Date().toISOString() + ': ' + url + ': locally cached');
+            log(url + ': locally cached');
             res.writeHead(200, {'Content-Type': 'image/png'});
             res.write(data);
             res.end();
@@ -50,7 +55,7 @@ http.createServer(function (req, res) {
             return;
         }
 
-        console.log(new Date().toISOString() + ': ' + url + ': fetch from osm');
+        log(url + ': fetch from osm');
         var serverName = parts[0] + '.tile.openstreetmap.org';
         var pathName = '/' + parts[1] + '/' + parts[2] + '/' + parts[3];
         const options = {
@@ -76,20 +81,20 @@ http.createServer(function (req, res) {
             res.writeHead(200, {'Content-Type': 'image/png'});
 
             subres.on('data', (data) => {
-                console.log(new Date().toISOString() + ': Got data for ' + fileName);
+                log('Got data for ' + fileName);
                 res.write(data);
                 fs.write(fd, data, nop);
             });
 
             subres.on('end', () => {
-                console.log(new Date().toISOString() + ': Finished ' + fileName);
+                log('Finished ' + fileName);
                 res.end();
                 fs.close(fd, nop);
             });
         });
 
         subreq.on('error', (e) => {
-            console.log(new Date().toISOString() + ': Error while fetching ' + url + ':');
+            log('Error while fetching ' + url + ':');
             console.error(e);
             res.writeHead(500, {'Content-Type': 'text/plain'});
             res.end('');
@@ -97,4 +102,6 @@ http.createServer(function (req, res) {
         subreq.end();
     }
 }).listen(9911, 'localhost');
-console.log(new Date().toISOString() + ': Node Tile Server running at http://localhost:9911/');
+
+log('Node Tile Server running at http://localhost:9911/');
+
