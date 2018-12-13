@@ -354,6 +354,7 @@ $(document).ready(function() {
     map.on('tileerror', tile_error);
     sidebar.on('content', load_content_if_necessary);
 
+    restore_settings();
     load_gpx_track_list();
 
     $('[name="zoom_min"]').text(zoom_min);
