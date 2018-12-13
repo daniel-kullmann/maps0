@@ -355,6 +355,7 @@ function restore_settings(set_map_bounds) {
                 }
             }
             get_settings_form_element('base_tile_url').value = data.base_tile_url;
+            tileLayer.setUrl(data.base_tile_url);
             if (set_map_bounds) {
                 if (data.latitude !== undefined && data.longitude !== undefined && data.zoom !== undefined) {
                     map.setView(L.latLng(data.latitude, data.longitude), data.zoom);
