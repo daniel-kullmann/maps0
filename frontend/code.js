@@ -396,7 +396,7 @@ function choose_localhost_8000_as_tiles_url() {
     element.value='http://localhost:8000/api/tiles/{s}/{z}/{x}/{y}.png';
 }
 
-function choose_this_server_as_tiles_url() {
+function choose_django_server_as_tiles_url() {
     var element = get_settings_form_element('base_tile_url');
     element.value='/api/tiles/{s}/{z}/{x}/{y}.png';
 }
