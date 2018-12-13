@@ -23,6 +23,7 @@ function mkdirsSync(name) {
 
 }
 
+// This function is used as callback when I don't need to do anything in the callback
 function nop() {
 }
 
