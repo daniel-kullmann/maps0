@@ -83,15 +83,10 @@ function stop_track_creation() {
     track_in_creation = null;
 }
 
-var lat_min = 36.91;
-var lat_max = 38.43;
-var lon_min = -9;
-var lon_max = -7.78;
-var lat = lat_min;
-var lon = lon_min;
+var lat_min, lat_max, lon_min, lon_max, lat, lon, zoom;
 var zoom_min = 8;
 var zoom_max = 16;
-var zoom = zoom_min;
+
 var map_scan_id = null;
 function map_scan() {
     map.setView(L.latLng(lat, lon), zoom);
@@ -119,12 +114,13 @@ function map_scan() {
 function toggle_map_scan(enable) {
     if (enable) {
         var bounds = map.getBounds();
-        var lat_min = Math.min(bounds.getSouth(), bounds.getNorth());
-        var lat_max = Math.max(bounds.getSouth(), bounds.getNorth());
-        var lon_min = Math.max(bounds.getEast(), bounds.getWest());
-        var lon_max = Math.max(bounds.getEast(), bounds.getWest());
-        var lat = lat_min;
-        var lon = lon_min;
+        lat_min = Math.min(bounds.getSouth(), bounds.getNorth());
+        lat_max = Math.max(bounds.getSouth(), bounds.getNorth());
+        lon_min = Math.max(bounds.getEast(), bounds.getWest());
+        lon_max = Math.max(bounds.getEast(), bounds.getWest());
+        lat = lat_min;
+        lon = lon_min;
+        zoom = zoom_min;
         map_scan_id = setInterval(map_scan, 4000);
         map_scan();
     } else {
