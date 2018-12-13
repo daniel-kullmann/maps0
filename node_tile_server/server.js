@@ -26,7 +26,7 @@ function mkdirsSync(name) {
 function nop() {
 }
 
-var CACHE_BASE_DIRECTORY = path.join(path.dirname(path.dirname(__filename)), 'maps_backend', 'tile_cache');
+var CACHE_BASE_DIRECTORY = path.join(path.dirname(path.dirname(__filename)), 'tile_cache');
 if (!fs.existsSync(CACHE_BASE_DIRECTORY)) {
     fs.mkdirSync(CACHE_BASE_DIRECTORY);
 }

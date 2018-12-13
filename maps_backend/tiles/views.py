@@ -9,7 +9,7 @@ import ssl
 context = None
 
 def get_tile(request,s,z,x,y):
-    dirname = "tile_cache/" + s + "/" + z + "/" + x
+    dirname = "../tile_cache/" + s + "/" + z + "/" + x
     filename = dirname + "/" + y + ".png"
     if os.path.exists(filename):
         with open(filename, "rb") as fh:
