@@ -6,6 +6,13 @@ from . import models
 
 import json
 
+ALLOWED_SETTINGS= [
+    'base_tile_url',
+    'latitude',
+    'longitude',
+    'zoom'
+]
+
 def get_csrf_token(request):
     json = '{"token": "' + request.COOKIES['csrftoken'] + '"}'
     response = HttpResponse(json, content_type='application/json')
@@ -22,6 +29,7 @@ def get_all_settings(request):
 def set_all_settings(request):
     for key in request.POST:
         if key == 'csrfmiddlewaretoken': continue
+        if key not in ALLOWED_SETTINGS: continue
         models.Setting(name=key, value=request.POST[key]).save()
     response = HttpResponse(json.dumps([]), content_type='application/json')
     return response
