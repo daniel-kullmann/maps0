@@ -227,17 +227,84 @@ function mouse_has_moved(event) {
     $("#location-info").text(msg);
 }
 
+/** Used in save_map_view_soon. */
+var save_map_view_id = null;
+var save_map_view_start = null;
+function save_map_view(bounds) {
+    $.ajax({
+        type: 'GET',
+        url: '/api/settings/token/',
+        success: function(data, textStatus, request) {
+            var latitude = (bounds.getNorth() + bounds.getSouth()) / 2;
+            var longitude = (bounds.getWest() + bounds.getEast()) / 2;
+            var settings = {
+                latitude: latitude,
+                longitude: longitude,
+                zoom: map.getZoom(),
+                csrfmiddlewaretoken: data.token,
+            };
+            $.ajax({
+                type: 'POST',
+                url: '/api/settings/set_all_settings/',
+                data: settings,
+                success: function(data, textStatus, request) {
+                    // The id is not needed anymore, because the setTimeout has fired.
+                    save_map_view_id = null;
+                    save_map_view_start = null;
+                },
+                error: function(request, textStatus, error) {
+                    $("#error-message").text(error);
+                    //showError('Oops, there was a problem retrieving the comments.');
+                },
+                dataType: 'json'
+            });
+        },
+        error: function(request, textStatus, error) {
+            $("#error-message").text(error);
+            //showError('Oops, there was a problem retrieving the comments.');
+        },
+        dataType: 'json'
+    });
+}
+
+/** Saves the map view (latitude, longitude, zoom) sometime in the future.
+    The reason for this function is that I don't want the web site to store the
+    map view too often. If you scroll lazily around the map, the map view can
+    change several times per second. I don't want to save the map view that
+    often to reduce load on the server. So I setup a timeout to save the view.
+    If another map move or zoom event comes in the meantime, I cancel the
+    timeout and setup another.
+    TODO: If you scroll around a lot, and then close the website very fast,
+    The map view won't be saved at all. Maybe I want to keep track of canceled
+    timeouts, and then save anyway if e.g. I haven't saved for 2 seconds or so.
+*/
+function save_map_view_soon(bounds) {
+    if (save_map_view_id != null) {
+        var now = new Date().getTime();
+        if (save_map_view_start === null || (now - save_map_view_start) < 2000) {
+            clearTimeout(save_map_view_id);
+            save_map_view_id = null;
+        }
+    } else {
+        save_map_view_start = new Date().getTime();
+    }
+    if (save_map_view_id == null) {
+        save_map_view_id = setTimeout(save_map_view.bind(null, bounds), 2000);
+    }
+}
+
 function map_info_has_changed(event) {
     var bounds = map.getBounds();
     var msg = bounds.getNorth().toFixed(2) + ", " + bounds.getWest().toFixed(2) +
         " => " + bounds.getSouth().toFixed(2) + ", " + bounds.getEast().toFixed(2) +
         "<br/>Zoom " + map.getZoom().toFixed(0);
     $("#map-info").html(msg);
+    save_map_view_soon(bounds);
 }
 
 function load_content_if_necessary(event) {
     if (event.id == 'settings') {
-        restore_settings();
+        restore_settings(false);
     }
 }
 
@@ -275,7 +342,7 @@ function save_settings()  {
     tileLayer.setUrl(settings.base_tile_url);
 }
 
-function restore_settings() {
+function restore_settings(set_map_bounds) {
     $.ajax({
         type: 'GET',
         url: '/api/settings/',
@@ -288,6 +355,13 @@ function restore_settings() {
                 }
             }
             get_settings_form_element('base_tile_url').value = data.base_tile_url;
+            if (set_map_bounds) {
+                if (data.latitude !== undefined && data.longitude !== undefined && data.zoom !== undefined) {
+                    map.setView(L.latLng(data.latitude, data.longitude), data.zoom);
+                } else {
+                    map.setView([37.31915, -8.8033], 13);
+                }
+            }
         },
         error: function(request, textStatus, error) {
             $("#error-message").text(error);
@@ -334,7 +408,7 @@ function choose_node_server_as_tiles_url() {
 
 $(document).ready(function() {
 
-    map = L.map('map').setView([37.31915, -8.8033], 13);
+    map = L.map('map');
 
     tileLayer = L.tileLayer('/api/tiles/{s}/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -350,7 +424,7 @@ $(document).ready(function() {
     map.on('tileerror', tile_error);
     sidebar.on('content', load_content_if_necessary);
 
-    restore_settings();
+    restore_settings(true);
     load_gpx_track_list();
 
     $('[name="zoom_min"]').text(zoom_min);
