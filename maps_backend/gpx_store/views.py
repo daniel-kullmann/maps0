@@ -25,7 +25,10 @@ def save_gpx(request):
     raw_data = json.loads(request.body)
     allowed_keys = ['name', 'date', 'description', 'track_points']
     data = {key: raw_data[key] for key in raw_data if key in allowed_keys}
-    file_name = data['date'] + '-' + data['name']
+    data['name'] = data['name'].strip()
+    data['date'] = data['date'].strip()
+    data['description'] = data['description'].strip()
+    file_name = data['date'] + '-' + data['name'] + ".gpx"
     content = create_pgx_file(data['name'], data['date'], data['description'], data['track_points'])
     with open(os.path.join(DIR,file_name), 'w') as fh:
         fh.write(content)
