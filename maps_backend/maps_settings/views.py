@@ -28,7 +28,6 @@ def get_all_settings(request):
 
 def set_all_settings(request):
     for key in request.POST:
-        if key == 'csrfmiddlewaretoken': continue
         if key not in ALLOWED_SETTINGS: continue
         models.Setting(name=key, value=request.POST[key]).save()
     response = HttpResponse(json.dumps([]), content_type='application/json')

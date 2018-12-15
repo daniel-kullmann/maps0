@@ -279,12 +279,14 @@ function save_map_view(bounds) {
                 latitude: latitude,
                 longitude: longitude,
                 zoom: map.getZoom(),
-                csrfmiddlewaretoken: data.token,
             };
             $.ajax({
                 type: 'POST',
                 url: '/api/settings/set_all_settings/',
                 data: settings,
+                headers: {
+                    'X-CSRFToken': data.token
+                },
                 success: function(data, textStatus, request) {
                     // The id is not needed anymore, because the setTimeout has fired.
                     save_map_view_id = null;
@@ -355,11 +357,13 @@ function save_settings()  {
         type: 'GET',
         url: '/api/settings/token/',
         success: function(data, textStatus, request) {
-            settings.csrfmiddlewaretoken = data.token;
             $.ajax({
                 type: 'POST',
                 url: '/api/settings/set_all_settings/',
                 data: settings,
+                headers: {
+                    'X-CSRFToken': data.token
+                },
                 success: function(data, textStatus, request) {
                     // ignore
                 },
