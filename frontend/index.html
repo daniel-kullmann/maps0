@@ -37,9 +37,14 @@
                     <span id="location-info"></span><br/>
                     <span id="map-scan-info"></span><br/>
                     <button id="start-track-creation" onClick="start_track_creation()">Create new GPX track..</button>
-                    <button id="stop-track-creation" onClick="stop_track_creation()" style="display: none;">Finish GPX track..</button><br/>
-                    <input type="text" name="track-in-creation-name" size="10" style="display: none;"/><br/>
-                    <span id="track-in-creation-distance" style="display: none;"></span><br/>
+                    <div id="track-in-creation" style="display: none;">
+                        <button id="stop-track-creation" onClick="stop_track_creation()">Finish GPX track..</button><br/>
+                        <label for="track-in-creation-name">Name: </label>
+                        <input type="text" name="track-in-creation-name" size="10"/><br/>
+                        <span id="track-in-creation-distance"></span><br/>
+                        <ul id="track-in-creation-points">
+                        </ul>
+                    </div>
                 </div>
                 <div class="sidebar-pane" id="tracks">
                     <h1 class="sidebar-header">
