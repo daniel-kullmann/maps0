@@ -5,7 +5,9 @@ var gpx_files = [];
 var colors = [
     ['red', 0],
     ['blue', 0],
-    ['green', 0]
+    ['green', 0],
+    ['gray', 0],
+    ['yellow', 0]
 ];
 
 function bound_map_by_gpx_tracks() {
