@@ -80,8 +80,46 @@ function stop_track_creation() {
         track_in_creation.poly_line.remove();
     }
     console.log(track_in_creation);
+    var track_points = track_in_creation.points.map(function(p) { return [p.lat, p.lng]; });
+    var gpx_data = {
+        name: track_in_creation.name,
+        date: new Date().toISOString(), // TODO
+        description: '', // TODO
+        track_points: track_points,
+    };
+    save_gpx(gpx_data);
     track_in_creation = null;
 }
+
+function save_gpx(gpx_data) {
+    $.ajax({
+        type: 'GET',
+        url: '/api/settings/token/',
+        success: function(data, textStatus, request) {
+            $.ajax({
+                type: 'POST',
+                url: '/api/gpx/save/',
+                data: JSON.stringify(gpx_data),
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'X-CSRFToken': data.token
+                },
+                success: function(data, textStatus, request) {
+                    // ignore
+                },
+                error: function(request, textStatus, error) {
+                    $("#error-message").text(error);
+                },
+                dataType: 'json'
+            });
+        },
+        error: function(request, textStatus, error) {
+            $("#error-message").text(error);
+        },
+        dataType: 'json'
+    });
+}
+
 
 var lat_min, lat_max, lon_min, lon_max, lat, lon, zoom;
 var zoom_min = 8;
