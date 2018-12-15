@@ -537,6 +537,11 @@ function choose_node_server_as_tiles_url() {
     element.value='/tile-server/{s}/{z}/{x}/{y}.png';
 }
 
+function choose_golang_server_as_tiles_url() {
+    var element = get_settings_form_element('base_tile_url');
+    element.value='http://localhost:9191/tile/{s}/{z}/{x}/{y}.png';
+}
+
 
 $(document).ready(function() {
 
