@@ -14,6 +14,7 @@ while inotifywait -q -e modify -r "$FILE_BASE"; do
     echo "changes detected; restarting node server ($PID)"
     kill "$PID"
     sleep 1
+    date
     node "$FILE_BASE/server.js" &
     PID="$!"
     echo "new node server started ($PID)"

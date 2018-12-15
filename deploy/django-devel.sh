@@ -13,6 +13,7 @@ sleep 2
 while inotifywait -e modify -r --exclude ".*db.sqlite3.*" "$FILE_BASE"; do
     "$DIR/uwsgi-stop.sh" || true
     sleep 2
+    date
     "$DIR/uwsgi.sh"
 done
 
