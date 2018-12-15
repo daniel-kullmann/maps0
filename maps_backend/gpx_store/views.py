@@ -4,7 +4,7 @@ import json
 import os
 import os.path
 
-DIR='gpx_store_files'
+DIR='../gpx_store_files'
 
 def list_gpx(request):
     files = os.listdir(DIR)
