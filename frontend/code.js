@@ -35,14 +35,35 @@ function pick_color() {
     return colors[lowest][0];
 }
 
+// track_in_creation = {
+//   distance: distance that rack covers in meters
+//   next_id: next id to assign
+//   points: array of points (id, L.LatLng)
+//   markers: each point gets a marker: (id, L.CircleMarker)
+//   poly_line: the whole track as polyline, can be recreated from points
+// }
 var track_in_creation = null;
 
-function highlight_point(point_number) {
-    track_in_creation.markers[point_number].setStyle({ color: 'red' });
+function find_marker_by_id(id) {
+    return track_in_creation.markers.findIndex(function(item) { return item[0] == id; });
 }
 
-function unhighlight_point(point_number) {
-    track_in_creation.markers[point_number].setStyle({ color: 'black' });
+function find_point_by_id(id) {
+    return track_in_creation.points.findIndex(function(item) { return item[0] == id; });
+}
+
+function highlight_point(point_id) {
+    var point_number = find_marker_by_id(point_id);
+    if (point_number>=0) {
+        track_in_creation.markers[point_number][1].setStyle({ color: 'red' });
+    }
+}
+
+function unhighlight_point(point_id) {
+    var point_number = find_marker_by_id(point_id);
+    if (point_number>=0) {
+        track_in_creation.markers[point_number][1].setStyle({ color: 'black' });
+    }
 }
 
 function recalculate_distance() {
@@ -54,67 +75,73 @@ function recalculate_distance() {
         $("#track-in-creation-distance").text(track_in_creation.distance.toFixed(2) + "m");
         return;
     }
-    var last_point = track_in_creation.points[0];
+    var last_point = track_in_creation.points[0][1];
     for (var i=1; i<track_in_creation.points.length; i++) {
-        var next_point = track_in_creation.points[i];
+        var next_point = track_in_creation.points[i][1];
         track_in_creation.distance += map.distance(last_point, next_point);
         last_point = next_point;
     }
     $("#track-in-creation-distance").text(track_in_creation.distance.toFixed(2) + "m");
 }
 
-function remove_track_in_creation_point(point_number) {
-    var before = track_in_creation.points.slice(0, point_number);
-    var after = track_in_creation.points.slice(point_number+1);
-    track_in_creation.points = before.concat(after);
+function remove_track_in_creation_point(point_id) {
+    var point_number = find_point_by_id(point_id);
+    if (point_number>=0) {
+        var before = track_in_creation.points.slice(0, point_number);
+        var after = track_in_creation.points.slice(point_number+1);
+        track_in_creation.points = before.concat(after);
+    }
 
-    track_in_creation.markers[point_number].remove();
-    before = track_in_creation.markers.slice(0, point_number);
-    after = track_in_creation.markers.slice(point_number+1);
-    track_in_creation.markers = before.concat(after);
+    point_number = find_marker_by_id(point_id);
+    if (point_number>=0) {
+        track_in_creation.markers[point_number][1].remove();
+        before = track_in_creation.markers.slice(0, point_number);
+        after = track_in_creation.markers.slice(point_number+1);
+        track_in_creation.markers = before.concat(after);
+    }
 
-    $('#track-in-creation-'+point_number).remove();
+    $('#track-in-creation-'+point_id).remove();
     recalculate_distance();
     track_in_creation.poly_line.remove();
-    track_in_creation.poly_line = L.polyline(track_in_creation.points, {color: 'black'});
+    track_in_creation.poly_line = L.polyline(track_in_creation.points.map(function (item) { return item[1]; }), {color: 'black'});
     track_in_creation.poly_line.addTo(map);
 }
 
 function mouse_click_handler(event) {
-    track_in_creation.points.push(event.latlng);
+    var id = track_in_creation.next_id++;
+    track_in_creation.points.push([id, event.latlng]);
     var marker = L.circleMarker(event.latlng, { radius: 5, color: 'black' });
-    track_in_creation.markers.push(marker);
+    track_in_creation.markers.push([id, marker]);
     marker.addTo(map);
     var number = track_in_creation.points.length;
     if (number > 1) {
         track_in_creation.distance += map.distance(
-            track_in_creation.points[number-1],
-            track_in_creation.points[number-2]
+            track_in_creation.points[number-1][1],
+            track_in_creation.points[number-2][1]
         );
         $("#track-in-creation-distance").text(track_in_creation.distance.toFixed(2) + "m");
     }
     if (track_in_creation.poly_line) {
         track_in_creation.poly_line.remove();
     }
-    track_in_creation.poly_line = L.polyline(track_in_creation.points, {color: 'black'});
+    track_in_creation.poly_line = L.polyline(track_in_creation.points.map(function (item) { return item[1]; }), {color: 'black'});
     track_in_creation.poly_line.addTo(map);
-    var point_number = track_in_creation.points.length-1;
-    var text = '' + point_number + ' (' +
+    var text = '' + id + ' (' +
         event.latlng.lat.toFixed(2) + ', ' + event.latlng.lng.toFixed(2) + ')';
     $("#track-in-creation-points").append(
-        '<li id="track-in-creation-' + point_number + '"' +
-            'onmouseover="highlight_point('+point_number+')"' +
-            'onmouseout="unhighlight_point('+point_number+')"' +
-            '>' +
+        '<li id="track-in-creation-' + id + '"' +
+            'onmouseover="highlight_point('+id+')"' +
+            'onmouseout="unhighlight_point('+id+')"' + '>' +
             text + ' ' +
             '<span style="cursor: pointer;" ' +
-            'onClick="remove_track_in_creation_point('+point_number+')"><b>x</b></span>' +
+            'onClick="remove_track_in_creation_point('+id+')"><b>x</b></span>' +
             '</li>'
     );
 }
 
 function start_track_creation() {
     track_in_creation = {
+        next_id: 0,
         points: [],
         poly_line: null,
         markers: [],
@@ -128,7 +155,7 @@ function start_track_creation() {
 }
 
 function stop_track_creation() {
-    var track_points = track_in_creation.points.map(function(p) { return [p.lat, p.lng]; });
+    var track_points = track_in_creation.points.map(function(p) { return [p[1].lat, p[1].lng]; });
     var gpx_data = {
         name: $('[name="track-in-creation-name"]')[0].value,
         date: new Date().toISOString(), // TODO
@@ -140,12 +167,12 @@ function stop_track_creation() {
 
 function destroy_track_in_creation() {
     $("#start-track-creation").css("display", "inline");
-    $("#track-creation").css("display", "none");
+    $("#track-in-creation").css("display", "none");
     map.off("click", mouse_click_handler);
     if (track_in_creation.poly_line) {
         track_in_creation.poly_line.remove();
     }
-    track_in_creation.markers.forEach(function(marker) { marker.remove(); });
+    track_in_creation.markers.forEach(function(marker) { marker[1].remove(); });
     track_in_creation = null;
 }
 
