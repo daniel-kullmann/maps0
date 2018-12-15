@@ -39,6 +39,9 @@ var track_in_creation = null;
 
 function mouse_click_handler(event) {
     track_in_creation.points.push(event.latlng);
+    var marker = L.circleMarker(event.latlng, { radius: 5, color: 'black' });
+    track_in_creation.markers.push(marker);
+    marker.addTo(map);
     var number = track_in_creation.points.length;
     if (number > 1) {
         track_in_creation.distance += map.distance(
@@ -59,6 +62,7 @@ function start_track_creation() {
         name: "unnamed track",
         points: [],
         poly_line: null,
+        markers: [],
         distance: 0
     };
     $("#start-track-creation").css("display", "none");
@@ -79,6 +83,7 @@ function stop_track_creation() {
     if (track_in_creation.poly_line) {
         track_in_creation.poly_line.remove();
     }
+    track_in_creation.markers.forEach(function(marker) { marker.remove(); });
     console.log(track_in_creation);
     var track_points = track_in_creation.points.map(function(p) { return [p.lat, p.lng]; });
     var gpx_data = {
