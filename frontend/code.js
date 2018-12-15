@@ -210,7 +210,6 @@ function show_gpx_file(show, file) {
             },
             error: function(request, textStatus, error) {
                 $("#error-message").text(error);
-                //showError('Oops, there was a problem retrieving the comments.');
             },
             dataType: 'xml'
         });
@@ -254,7 +253,6 @@ function load_gpx_track_list() {
         },
         error: function(request, textStatus, error) {
             $("#error-message").text(error);
-            //showError('Oops, there was a problem retrieving the comments.');
         },
         dataType: 'json'
     });
@@ -294,14 +292,12 @@ function save_map_view(bounds) {
                 },
                 error: function(request, textStatus, error) {
                     $("#error-message").text(error);
-                    //showError('Oops, there was a problem retrieving the comments.');
                 },
                 dataType: 'json'
             });
         },
         error: function(request, textStatus, error) {
             $("#error-message").text(error);
-            //showError('Oops, there was a problem retrieving the comments.');
         },
         dataType: 'json'
     });
@@ -369,14 +365,12 @@ function save_settings()  {
                 },
                 error: function(request, textStatus, error) {
                     $("#error-message").text(error);
-                    //showError('Oops, there was a problem retrieving the comments.');
                 },
                 dataType: 'json'
             });
         },
         error: function(request, textStatus, error) {
             $("#error-message").text(error);
-            //showError('Oops, there was a problem retrieving the comments.');
         },
         dataType: 'json'
     });
@@ -408,7 +402,6 @@ function restore_settings(set_map_bounds) {
         },
         error: function(request, textStatus, error) {
             $("#error-message").text(error);
-            //showError('Oops, there was a problem retrieving the comments.');
         },
         dataType: 'json'
     });
