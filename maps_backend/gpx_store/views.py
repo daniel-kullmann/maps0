@@ -30,7 +30,7 @@ def save_gpx(request):
     with open(os.path.join(DIR,file_name), 'w') as fh:
         fh.write(content)
     #return get_gpx(request, file_name)
-    response = HttpResponse('', content_type='text/plain')
+    response = HttpResponse('{}', content_type='text/plain')
     response['Access-Control-Allow-Origin'] = '*'
     return response
 
