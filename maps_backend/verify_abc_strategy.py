@@ -20,9 +20,11 @@
 
 import os
 
-for (dirpath, dirnames, filenames) in os.walk("./tile_cache/"):
+count = 0
+for (dirpath, dirnames, filenames) in os.walk("../tile_cache/"):
     parts = dirpath.split("/")[2:]
     for filename in filenames:
+        count += 1
         if filename.endswith(".png"):
             filename = filename[0:len(filename)-4]
         else:
@@ -38,5 +40,5 @@ for (dirpath, dirnames, filenames) in os.walk("./tile_cache/"):
             if parts2[4] != 2: print(parts2)
         else:
             print(parts2)
-
+print("Checked " + str(count) + " files")
 
