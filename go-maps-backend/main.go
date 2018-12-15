@@ -36,13 +36,13 @@ func GetTile(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add("Content-Type", "image/png")
 			w.Header().Add("Access-Control-Allow-Origin", "*")
 			os.MkdirAll(dirName, 0666)
-			fh, err := os.Create(fileName)
-			if err != nil {
-			}
+			fh, err_fh := os.Create(fileName)
 			buffer := make([]uint8, 100*1024)
 			for count, err := response.Body.Read(buffer); err == nil && count != 0; count, err = response.Body.Read(buffer) {
 				w.Write(buffer[0:count])
-				fh.Write(buffer[0:count])
+				if err_fh == nil {
+					fh.Write(buffer[0:count])
+				}
 			}
 			fh.Close()
 			response.Body.Close()
@@ -53,7 +53,9 @@ func GetTile(w http.ResponseWriter, r *http.Request) {
 		log.Print(fileName + " does exist")
 		fh, err := os.Open(fileName)
 		if err != nil {
-			log.Print("Could not open " + fileName)
+			w.Header().Add("Content-Type", "text/plain")
+			w.WriteHeader(404)
+			log.Panic(err)
 		}
 		buffer := make([]uint8, 100*1024)
 		for count, err := fh.Read(buffer); err == nil && count != 0; count, err = fh.Read(buffer) {
