@@ -36,11 +36,16 @@
                     <span id="map-info"></span><br/>
                     <span id="location-info"></span><br/>
                     <span id="map-scan-info"></span><br/>
-                    <button id="start-track-creation" onClick="start_track_creation()">Create new GPX track..</button>
+                    <button id="start-track-creation" onClick="start_track_creation()">Create new GPX track</button>
                     <div id="track-in-creation" style="display: none;">
-                        <button id="stop-track-creation" onClick="stop_track_creation()">Finish GPX track..</button><br/>
+                        <button id="stop-track-creation" onClick="stop_track_creation();">Finish GPX track</button>
+                        <button id="stop-track-creation" onClick="cancel_track_creation();">Cancel GPX track</button><br/>
                         <label for="track-in-creation-name">Name: </label>
                         <input type="text" name="track-in-creation-name" size="10"/><br/>
+                        <label for="track-in-creation-date">Date: </label>
+                        <input type="text" name="track-in-creation-date" size="10"/><br/>
+                        <label for="track-in-creation-description">Description: </label><br/>
+                        <textarea name="track-in-creation-description" size="10"></textarea><br/>
                         <span id="track-in-creation-distance"></span><br/>
                         <ul id="track-in-creation-points">
                         </ul>

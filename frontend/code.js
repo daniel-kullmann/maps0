@@ -150,14 +150,22 @@ function start_track_creation() {
     $("#start-track-creation").css("display", "none");
     $("#track-in-creation").css("display", "block");
     $('[name="track-in-creation-name"]').attr("value", 'unnamed-track');
+    $('[name="track-in-creation-date"]').attr("value", new Date().toISOString());
+    $('[name="track-in-creation-description"]').text('');
     $("#track-in-creation-distance").text(track_in_creation.distance.toFixed(2) + "m");
     map.on("click", mouse_click_handler);
+}
+
+function cancel_track_creation() {
+    destroy_track_in_creation();
 }
 
 function stop_track_creation() {
     var track_points = track_in_creation.points.map(function(p) { return [p[1].lat, p[1].lng]; });
     var gpx_data = {
         name: $('[name="track-in-creation-name"]')[0].value,
+        date: $('[name="track-in-creation-date"]')[0].value,
+        description: $('[name="track-in-creation-description"]')[0].value,
         date: new Date().toISOString(), // TODO
         description: '', // TODO
         track_points: track_points,
@@ -191,6 +199,7 @@ function save_gpx(gpx_data) {
                 },
                 success: function(data, textStatus, request) {
                     destroy_track_in_creation();
+                    load_gpx_track_list();
                 },
                 error: function(request, textStatus, error) {
                     $("#error-message").text(error);
