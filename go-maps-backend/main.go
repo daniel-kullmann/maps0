@@ -46,7 +46,7 @@ func GetTile(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(404)
 			w.Write([]byte(response.Status))
 			response.Body.Close()
-			log.Print("ERROR: Request resulted in " + string(response.StatusCode) + ", " + url)
+			log.Print("ERROR: Request resulted in " + response.Status + ", " + url)
 		} else {
 			w.Header().Add("Content-Type", "image/png")
 			w.Header().Add("Access-Control-Allow-Origin", "*")
@@ -55,15 +55,21 @@ func GetTile(w http.ResponseWriter, r *http.Request) {
 			if err_fh != nil {
 				log.Print("Can't create output file " + fileName)
 			}
+			size := 0
 			buffer := make([]uint8, 100*1024)
-			for count, err := response.Body.Read(buffer); err == nil && count != 0; count, err = response.Body.Read(buffer) {
-				w.Write(buffer[0:count])
+			for {
+				count, err := response.Body.Read(buffer)
+				if err != nil || count == 0 {
+					break
+				}
+				size += count
 				if err_fh == nil {
 					fh.Write(buffer[0:count])
 				}
 			}
 			fh.Close()
 			response.Body.Close()
+			log.Printf("Finished retrieving %s: %d", fileName, size)
 		}
 	} else {
 		w.Header().Add("Content-Type", "image/png")
