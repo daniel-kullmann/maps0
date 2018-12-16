@@ -63,6 +63,7 @@ func GetTile(w http.ResponseWriter, r *http.Request) {
 					break
 				}
 				size += count
+				w.Write(buffer[0:count])
 				if err_fh == nil {
 					fh.Write(buffer[0:count])
 				}
