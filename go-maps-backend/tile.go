@@ -17,7 +17,7 @@ func GetTile(w http.ResponseWriter, r *http.Request) {
 	z := vars["z"]
 	x := vars["x"]
 	y := vars["y"] + ".png"
-	dirName := TileBase + strings.Join([]string{z, x, y}, "/")
+	dirName := TileBase + strings.Join([]string{s, z, x}, "/")
 	fileName := TileBase + strings.Join([]string{s, z, x, y}, "/")
 	if _, err := os.Stat(fileName); os.IsNotExist(err) {
 
@@ -47,7 +47,10 @@ func GetTile(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.Header().Add("Content-Type", "image/png")
 			w.Header().Add("Access-Control-Allow-Origin", "*")
-			os.MkdirAll(dirName, 0777)
+			err = os.MkdirAll(dirName, 0777)
+			if err != nil {
+				log.Print("Can't create output dir " + dirName)
+			}
 			fh, err_fh := os.Create(fileName)
 			if err_fh != nil {
 				log.Print("Can't create output file " + fileName)
