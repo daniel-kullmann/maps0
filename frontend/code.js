@@ -168,8 +168,6 @@ function stop_track_creation() {
         name: $('[name="track-in-creation-name"]')[0].value,
         date: $('[name="track-in-creation-date"]')[0].value,
         description: $('[name="track-in-creation-description"]')[0].value,
-        date: new Date().toISOString(), // TODO
-        description: '', // TODO
         track_points: track_points,
     };
     save_gpx(gpx_data);
