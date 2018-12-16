@@ -375,8 +375,9 @@ function save_map_view(bounds) {
             $.ajax({
                 type: 'POST',
                 url: '/api/settings/set_all_settings/',
-                data: settings,
+                data: JSON.stringify(settings),
                 headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
                     'X-CSRFToken': data.token
                 },
                 success: function(data, textStatus, request) {
