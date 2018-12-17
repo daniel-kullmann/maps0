@@ -3,30 +3,31 @@
 set -e -u
 
 DIR="$(dirname "$0")"
-
 FILE_BASE="$DIR/../go-maps-backend"
 
-(cd "$FILE_BASE"; go build -o simple-maps *.go)
-"$FILE_BASE"/simple-maps &
-PID="$!"
-echo "go server started ($PID)"
+function start_server() {
+    (cd "$FILE_BASE"; while ! go build -o simple-offline-map *.go; do sleep 1; done)
+    "$FILE_BASE"/simple-offline-map "$@" &
+    PID=$!
+    echo "go server started ($PID)"
+}
+
+function stop_server() {
+    test -n "$PID" && kill "$PID" || true
+    echo "Killed old server"
+}
 
 cd "$FILE_BASE/.."
 
-function stop_server() {
-    test -n "$PID" && kill "$PID"
-}
+start_server "$@"
 
 trap stop_server INT
 
 while inotifywait -q -e modify -r "$FILE_BASE"; do
     echo "changes detected; restarting node server ($PID)"
-    kill "$PID"
-    sleep 1
+    stop_server
+    sleep 0.5
     date
-    (cd "$FILE_BASE"; go build -o simple-maps *.go)
-    $FILE_BASE/simple-maps &
-    PID="$!"
-    echo "new go server started ($PID)"
+    start_server "$@"
 done
 
