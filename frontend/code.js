@@ -547,7 +547,7 @@ $(document).ready(function() {
 
     map = L.map('map');
 
-    tileLayer = L.tileLayer('/api/tiles/{s}/{z}/{x}/{y}.png', {
+    tileLayer = L.tileLayer('./tile/{s}/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 	      crossOrigin: true
     });
