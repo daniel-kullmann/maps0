@@ -14,7 +14,7 @@ import (
 var db *sql.DB
 
 const (
-	token = "oh-i-should-actually-implement-csrf"
+	token = "oh-we-totally-use-csrf"
 )
 
 func initDatabase() {
