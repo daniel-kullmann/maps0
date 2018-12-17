@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
 var db *sql.DB
@@ -15,6 +16,29 @@ var db *sql.DB
 const (
 	token = "oh-i-should-actually-implement-csrf"
 )
+
+func initDatabase() {
+	_, err := os.Stat(DataBasePath)
+	if os.IsNotExist(err) {
+		log.Print("Need to create database")
+		var sqlStmt = `CREATE TABLE "setting" ("name" varchar(255) NOT NULL PRIMARY KEY, "value" varchar(255) NOT NULL)`
+		db, err := sql.Open("sqlite3", DataBasePath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		_, err = db.Query("select name, value from setting limit 1")
+		if err != nil {
+			// Create table if it does not exist
+			log.Print(err)
+			_, err = db.Exec(sqlStmt)
+			if err != nil {
+				db.Close()
+				log.Fatal(err)
+			}
+		}
+		db.Close()
+	}
+}
 
 func GetDb() (*sql.DB, error) {
 	if db == nil {
@@ -32,7 +56,7 @@ func GetSettings(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	rows, err := db.Query("select name, value from maps_settings_setting")
+	rows, err := db.Query("select name, value from setting")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -91,7 +115,7 @@ func SetSettings(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	stmt, err := tx.Prepare("REPLACE INTO maps_settings_setting (name, value) VALUES (?, ?)")
+	stmt, err := tx.Prepare("REPLACE INTO setting (name, value) VALUES (?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}

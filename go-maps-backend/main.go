@@ -18,6 +18,7 @@ var (
 
 func main() {
 	router := mux.NewRouter()
+	setup()
 	router.HandleFunc("/tile/{s}/{z}/{x}/{y}.png", GetTile).Methods("GET")
 	router.HandleFunc("/api/gpx/", LoadGpxList).Methods("GET")
 	router.HandleFunc("/api/gpx/save/", SaveGpx).Methods("POST")
@@ -29,6 +30,9 @@ func main() {
 	log.Fatal(http.ListenAndServe(":9191", router))
 }
 
+func setup() {
+	initDatabase()
+}
 
 func GetFile(w http.ResponseWriter, r *http.Request) {
 	name := mux.Vars(r)["name"]
