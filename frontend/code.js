@@ -187,11 +187,11 @@ function destroy_track_in_creation() {
 function save_gpx(gpx_data) {
     $.ajax({
         type: 'GET',
-        url: '/api/settings/token/',
+        url: './api/settings/token/',
         success: function(data, textStatus, request) {
             $.ajax({
                 type: 'POST',
-                url: '/api/gpx/save/',
+                url: './api/gpx/save/',
                 data: JSON.stringify(gpx_data),
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8',
@@ -266,7 +266,7 @@ function show_gpx_file(show, file) {
     if (show) {
         $.ajax({
             type: 'GET',
-            url: '/api/gpx/get/' + file,
+            url: './api/gpx/get/' + file,
             //data: {...},
             success: function(data, textStatus, request) {
                 var color = pick_color();
@@ -326,7 +326,7 @@ function show_gpx_file(show, file) {
 function load_gpx_track_list() {
     $.ajax({
         type: 'GET',
-        url: '/api/gpx/',
+        url: './api/gpx/',
         //data: {...},
         success: function(data, textStatus, request) {
             var text = "<ul>";
@@ -363,7 +363,7 @@ var save_map_view_start = null;
 function save_map_view(bounds) {
     $.ajax({
         type: 'GET',
-        url: '/api/settings/token/',
+        url: './api/settings/token/',
         success: function(data, textStatus, request) {
             var latitude = (bounds.getNorth() + bounds.getSouth()) / 2;
             var longitude = (bounds.getWest() + bounds.getEast()) / 2;
@@ -374,7 +374,7 @@ function save_map_view(bounds) {
             };
             $.ajax({
                 type: 'POST',
-                url: '/api/settings/set_all_settings/',
+                url: './api/settings/set_all_settings/',
                 data: JSON.stringify(settings),
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8',
@@ -446,11 +446,11 @@ function save_settings()  {
 
     $.ajax({
         type: 'GET',
-        url: '/api/settings/token/',
+        url: './api/settings/token/',
         success: function(data, textStatus, request) {
             $.ajax({
                 type: 'POST',
-                url: '/api/settings/set_all_settings/',
+                url: './api/settings/set_all_settings/',
                 data: JSON.stringify(settings),
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8',
@@ -477,7 +477,7 @@ function save_settings()  {
 function restore_settings(set_map_bounds) {
     $.ajax({
         type: 'GET',
-        url: '/api/settings/',
+        url: './api/settings/',
         //data: {...},
         success: function(data, textStatus, request) {
             if (!data.base_tile_url) {
