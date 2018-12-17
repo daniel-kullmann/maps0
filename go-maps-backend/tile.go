@@ -34,13 +34,11 @@ func GetTile(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			w.Header().Add("Content-Type", "text/plain")
 			w.WriteHeader(404)
-			response.Body.Close()
 			log.Print("ERROR: Can't make request to " + url)
 		} else if response.StatusCode != 200 {
 			w.Header().Add("Content-Type", "text/plain")
 			w.WriteHeader(404)
 			w.Write([]byte(response.Status))
-			response.Body.Close()
 			log.Print("ERROR: Request resulted in " + response.Status + ", " + url)
 		} else {
 			w.Header().Add("Content-Type", "image/png")
@@ -67,7 +65,6 @@ func GetTile(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 			fh.Close()
-			response.Body.Close()
 			log.Printf("Finished retrieving %s: %d", fileName, size)
 		}
 	} else {
