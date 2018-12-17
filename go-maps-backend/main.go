@@ -35,26 +35,12 @@ func GetFile(w http.ResponseWriter, r *http.Request) {
 	_, err := os.Stat(FileBase + name)
 	if err == nil {
 		contentType := mime.TypeByExtension(path.Ext(name))
-		//var contentType = "text/plain"
-		//switch path.Ext(name) {
-		//case ".html":
-		//	contentType = "text/html"
-		//case ".js":
-		//	contentType = "application/javascript"
-		//case ".css":
-		//	contentType = "application/css"
-		//case ".png":
-		//	contentType = "image/png"
-		//default:
-		//	log.Print("Unexpected " + name)
-		//}
 		w.Header().Add("Content-Type", contentType)
-		log.Print("as " + contentType)
 		fh, err := os.Open(FileBase + name)
 		if err != nil {
 			w.Header().Add("Content-Type", "text/plain")
 			w.WriteHeader(500)
-			log.Print("Could not open: " + name)
+			w.Write([]byte("Could not open: " + name))
 		}
 		buffer := make([]uint8, 10*1024)
 		for {
@@ -68,6 +54,6 @@ func GetFile(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.Header().Add("Content-Type", "text/plain")
 		w.WriteHeader(404)
-		log.Print("Not found: " + name)
+		w.Write([]byte("Not found: " + name))
 	}
 }
