@@ -27,7 +27,6 @@ func GetTile(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			w.Header().Add("Content-Type", "text/plain")
 			w.WriteHeader(404)
-			//w.Write(err.String())
 		}
 		request.Header.Set("User-Agent", ua)
 		response, err := client.Do(request)
@@ -41,16 +40,18 @@ func GetTile(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte(response.Status))
 			log.Print("ERROR: Request resulted in " + response.Status + ", " + url)
 		} else {
-			w.Header().Add("Content-Type", "image/png")
-			w.Header().Add("Access-Control-Allow-Origin", "*")
 			err = os.MkdirAll(dirName, 0777)
 			if err != nil {
-				log.Print("Can't create output dir " + dirName)
+				log.Print("ERROR: Can't create output dir " + dirName)
+				// Continue, because we can still serve the tile
 			}
 			fh, err_fh := os.Create(fileName)
 			if err_fh != nil {
-				log.Print("Can't create output file " + fileName)
+				log.Print("ERROR: Can't create output file " + fileName)
+				// Continue, because we can still serve the tile
 			}
+			w.Header().Add("Content-Type", "image/png")
+			w.Header().Add("Access-Control-Allow-Origin", "*")
 			size := 0
 			buffer := make([]uint8, 100*1024)
 			for {
