@@ -1,0 +1,15 @@
+version: '2'
+services:
+  simple-offline-map:
+    restart: always
+    image: daniel-kullmann/simple-offline-map:latest
+    env_file: environment 
+    ports:
+      - "9191:9191"
+    expose:
+      - "9191"
+    volumes:
+      - /home/daniel/.local/share/simple-offline-map/tiles:/var/www/app/tiles
+      - /home/daniel/.local/share/simple-offline-map/gpx:/var/www/app/gpx
+      - /home/daniel/.local/share/simple-offline-map/db.sqlite3:/var/www/app/db.sqlite3
+    working_dir: /var/www/django-application
