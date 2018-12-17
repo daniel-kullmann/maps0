@@ -9,6 +9,13 @@ import (
 	"path"
 )
 
+var (
+	TileBase     = "./tile_cache/"
+	FileBase     = "./frontend/"
+	GpxBase      = "./gpx_store_files/"
+	DataBasePath = "./db.sqlite3"
+)
+
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/tile/{s}/{z}/{x}/{y}.png", GetTile).Methods("GET")
@@ -22,9 +29,6 @@ func main() {
 	log.Fatal(http.ListenAndServe(":9191", router))
 }
 
-const (
-	FileBase = "../frontend/"
-)
 
 func GetFile(w http.ResponseWriter, r *http.Request) {
 	name := mux.Vars(r)["name"]

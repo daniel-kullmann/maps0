@@ -19,7 +19,7 @@ const (
 func GetDb() (*sql.DB, error) {
 	if db == nil {
 		var err error
-		db, err = sql.Open("sqlite3", "../maps_backend/db.sqlite3")
+		db, err = sql.Open("sqlite3", DataBasePath)
 		if err != nil {
 			return nil, err
 		}

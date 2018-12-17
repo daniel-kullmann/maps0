@@ -11,8 +11,6 @@ import (
 	"strings"
 )
 
-const GpxBase = "../gpx_store_files/"
-
 type Gpx = struct {
 	Name         string
 	Date         string

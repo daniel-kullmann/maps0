@@ -9,8 +9,6 @@ import (
 	"strings"
 )
 
-const TileBase = "../tile_cache/"
-
 func GetTile(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	s := vars["s"]
