@@ -15,23 +15,18 @@ Planned features (TODO list):
   * Don't show all gpx files; allow selection of gpx files, and then switching them on and off
   * Automatic and manual tagging of GPX files
 * Adding your own tracks
-  * DONE Add a mode to the map (viewing, add new track)
-  * DONE Capture clicks on map, and add appropriate markers and lines
-  * DONE Save the resulting GPX in the end
   * TODO Determine and save metadata (date, description, ...)
 * Enhance showing of GPX:
   * Customizing markers and colors of shown GPX tracks
-  * DONE Show lines between track points
-  * DONE Show markers only at beginning and end of track
-* Stand-alone mode: create a docker image that contains the whole application,
-  including the tiles cache
 * Add customizing of tiles cache (maximum age of tiles, maximum size of cache)
 * Add refreshing of cache
   * For that, we need to store cache metadata, like the etags and max-age
     headers that come from the OSM tile server.
-* DONE Add nginx config to serve the frontend (static html) and backend (via uwsgi).
-* DONE Add node backend of tile cache for better concurrency
-* Add Go implementation of whole backend
+
+
+## Configuration
+
+TODO
 
 ## Installation
 
@@ -48,4 +43,20 @@ go generate
 go build -o simple-offline-map
 ```
 Instead of `go generate`, you can also run `go-bindata -prefix ../frontend/ ../frontend/...`.
+
+You can also just do a `make` to build the binary.
+
+The resulting binary is located in `./go-maps-backend/simple-offline-map`.
+
+
+## Build a docker image
+
+I also added the necessary files to build a docker image. Since this docker
+image is based on Alpine, and Alpine uses a different loader .so than regular
+linux systems, I use a separate docker image just to build the binary. This
+results in a really small resulting docker image (~19MB), while the docker image
+for building is ~600MB.
+
+Simply call `make docker-image` for creating the docker-image, or look into the
+`Makefile` under the `docker-image` heading to see how the image is built.
 
