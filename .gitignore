@@ -2,3 +2,4 @@ __pycache__
 db.sqlite3*
 /go-maps-backend/simple-offline-map
 
+go-maps-backend/bindata.go
