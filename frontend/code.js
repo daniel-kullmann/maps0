@@ -222,6 +222,7 @@ var zoom_max = 16;
 var map_scan_id = null;
 function map_scan() {
     map.setView(L.latLng(lat, lon), zoom);
+    console.log("view: " + lat.toFixed(2) + ", " + lon.toFixed(2) + ", " + zoom);
     var bounds = map.getBounds();
     var width = 0.95*Math.abs(bounds.getWest() - bounds.getEast());
     var height = 0.95*Math.abs(bounds.getNorth() - bounds.getSouth());
@@ -243,21 +244,29 @@ function map_scan() {
         lat += height;
     }
 }
+
+function calculate_start_bounds(zoom_to_set) {
+    // North > South
+    // East > West
+    var bounds = map.getBounds();
+    lat_min = Math.min(bounds.getSouth(), bounds.getNorth());
+    lat_max = Math.max(bounds.getSouth(), bounds.getNorth());
+    lon_min = Math.min(bounds.getEast(), bounds.getWest());
+    lon_max = Math.max(bounds.getEast(), bounds.getWest());
+    lat = lat_min;
+    lon = lon_min;
+    zoom = zoom_to_set;
+}
+
 function toggle_map_scan(enable) {
     if (enable) {
-        var bounds = map.getBounds();
-        lat_min = Math.min(bounds.getSouth(), bounds.getNorth());
-        lat_max = Math.max(bounds.getSouth(), bounds.getNorth());
-        lon_min = Math.max(bounds.getEast(), bounds.getWest());
-        lon_max = Math.max(bounds.getEast(), bounds.getWest());
-        lat = lat_min;
-        lon = lon_min;
-        zoom = zoom_min;
+        calculate_start_bounds(zoom_min);
         map_scan_id = setInterval(map_scan, 4000);
         map_scan();
     } else {
         clearInterval(map_scan_id);
         $("#map-scan-info").text("");
+        $('[name="toggle-map-scan"]')[0].checked = false;
     }
 }
 
