@@ -17,7 +17,6 @@ var (
 	ConfigFileName = "${HOME}/.config/simple-offline-map/config.ini"
 	CacheBaseDir   = "${HOME}/.local/share/simple-offline-map"
 	TileBase       = CacheBaseDir + "/tiles/"
-	FileBase       = "./frontend/"
 	GpxBase        = CacheBaseDir + "/gpx/"
 	DataBasePath   = CacheBaseDir + "/db.sqlite3"
 )
@@ -64,8 +63,6 @@ func ReadConfigFile() map[string]string {
 		}
 		log.Print(parts)
 		switch strings.Trim(parts[0], " \t\n") {
-		case "FileBase":
-			FileBase = os.ExpandEnv(strings.Trim(parts[1], " \t\n"))
 		case "TileBase":
 			TileBase = os.ExpandEnv(strings.Trim(parts[1], " \t\n"))
 		case "DataBasePath":
@@ -83,7 +80,6 @@ func FixFileNames() {
 	ConfigFileName = os.ExpandEnv(ConfigFileName)
 	CacheBaseDir = os.ExpandEnv(CacheBaseDir)
 	TileBase = os.ExpandEnv(TileBase)
-	FileBase = os.ExpandEnv(FileBase)
 	GpxBase = os.ExpandEnv(GpxBase)
 	DataBasePath = os.ExpandEnv(DataBasePath)
 }
@@ -94,16 +90,13 @@ func setup() {
 	// 1. Check whether they were given as command line flags; then use them like that
 	// 2. Check whether a config file exists (${HOME}/.config/simple-map/config.ini
 	// 3. use files in ${HOME}/.local/share/simple-map/
-	// 4. just for FileBase: check ./frontend/
 	var TileBaseFlag string
 	var GpxBaseFlag string
 	var DataBasePathFlag string
-	var FileBaseFlag string
 	flag.StringVar(&ConfigFileName, "config", "", "use this file for configuration settings")
 	flag.StringVar(&TileBaseFlag, "tile", "", "use this directory as map tile cache")
 	flag.StringVar(&GpxBaseFlag, "gpx", "", "use this directory as gpx file store")
 	flag.StringVar(&DataBasePathFlag, "db", "", "use this file as database (sqlite3)")
-	flag.StringVar(&FileBaseFlag, "files", "", "use this directory for frontend files (index.html, css files, js files, etc)")
 	flag.Parse()
 	ReadConfigFile()
 	if TileBaseFlag != "" {
@@ -115,12 +108,8 @@ func setup() {
 	if DataBasePathFlag != "" {
 		DataBasePath = os.ExpandEnv(DataBasePathFlag)
 	}
-	if FileBaseFlag != "" {
-		FileBase = os.ExpandEnv(FileBaseFlag)
-	}
 	FixFileNames()
 
-	log.Print("INFO: FileBase set to " + FileBase)
 	log.Print("INFO: TileBase set to " + TileBase)
 	log.Print("INFO: GpxBase set to " + GpxBase)
 	log.Print("INFO: DataBasePath set to " + DataBasePath)
