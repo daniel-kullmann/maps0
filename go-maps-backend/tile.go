@@ -34,11 +34,13 @@ func GetTile(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add("Content-Type", "text/plain")
 			w.WriteHeader(404)
 			log.Print("ERROR: Can't make request to " + url)
+			log.Print(err)
 		} else if response.StatusCode != 200 {
 			w.Header().Add("Content-Type", "text/plain")
 			w.WriteHeader(404)
 			w.Write([]byte(response.Status))
 			log.Print("ERROR: Request resulted in " + response.Status + ", " + url)
+			log.Print(err)
 		} else {
 			err = os.MkdirAll(dirName, 0777)
 			if err != nil {
@@ -77,6 +79,7 @@ func GetTile(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add("Content-Type", "text/plain")
 			w.WriteHeader(404)
 			log.Print("ERROR: Can't read file " + fileName)
+			log.Print(err)
 		}
 		buffer := make([]uint8, 100*1024)
 		for count, err := fh.Read(buffer); err == nil && count != 0; count, err = fh.Read(buffer) {
