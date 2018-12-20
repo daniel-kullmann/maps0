@@ -11,6 +11,8 @@ import (
 	"strings"
 )
 
+//go:generate go-bindata -prefix ../frontend/ ../frontend/...
+
 var (
 	ConfigFileName = "${HOME}/.config/simple-offline-map/config.ini"
 	CacheBaseDir   = "${HOME}/.local/share/simple-offline-map"
@@ -135,25 +137,11 @@ func GetFile(w http.ResponseWriter, r *http.Request) {
 	if name == "" {
 		name = "index.html"
 	}
-	_, err := os.Stat(FileBase + name)
+	asset, err := Asset(name)
 	if err == nil {
 		contentType := mime.TypeByExtension(path.Ext(name))
 		w.Header().Add("Content-Type", contentType)
-		fh, err := os.Open(FileBase + name)
-		if err != nil {
-			w.Header().Add("Content-Type", "text/plain")
-			w.WriteHeader(500)
-			w.Write([]byte("Could not open: " + name))
-		}
-		buffer := make([]uint8, 10*1024)
-		for {
-			count, err := fh.Read(buffer)
-			if err != nil || count == 0 {
-				break
-			}
-			w.Write(buffer[0:count])
-		}
-		fh.Close()
+		w.Write(asset)
 	} else {
 		w.Header().Add("Content-Type", "text/plain")
 		w.WriteHeader(404)

@@ -34,13 +34,16 @@ Planned features (TODO list):
 
 ## Installation
 
-* Install django
-* Run the following commands from the `maps_backend` folder:
-```
-./manage.py migrate
-./manage.py runserver
-```
-* Visit the file `frontend/index.html` with your web browser
+Setup (you only have to do this once):
+* Install golang
+* Make sure that the `GOBIN` environment variable is set to a directory that is available on `PATH`, e.g. `export GOBIN=$HOME/bin`
+* Install go-bindata: run `go get -u github.com/jteeuwen/go-bindata/...`
+* Make sure that the `go-bindata` command is available by running it
 
-After the first run, it will be enough to restart the django application via
-`./manage.py runserver` and o point the web browser at the same file again.
+To build the executable, you need to run two things:
+```
+cd go-maps-backend
+go generate
+go build -o simple-offline-map
+```
+
