@@ -1,12 +1,13 @@
-# Simple maps application
+# Simple offline maps application
 
-This is supposed to be a small maps application.
+This is a small maps application with support for an offline cache for the map tiles.
 
 ## Features
 
 * Shows a map via the Leaflet library, using tiles from OpenStreetMap
-* Possibility to show GPX tracks
-* Uses a tile cache (via a django app) so that offline usage is possible
+* Show GPX tracks
+* Create new tracks
+* Can optionally use a local tile cache so that offline usage is possible
 
 Planned features (TODO list):
 * Use React or another framework to better structure the code
@@ -40,10 +41,11 @@ Setup (you only have to do this once):
 * Install go-bindata: run `go get -u github.com/jteeuwen/go-bindata/...`
 * Make sure that the `go-bindata` command is available by running it
 
-To build the executable, you need to run two things:
+To build the executable, you need to execute these commands:
 ```
 cd go-maps-backend
 go generate
 go build -o simple-offline-map
 ```
+Instead of `go generate`, you can also run `go-bindata -prefix ../frontend/ ../frontend/...`.
 
