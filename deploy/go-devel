@@ -6,14 +6,19 @@ DIR="$(dirname "$0")"
 FILE_BASE="$DIR/../go-maps-backend"
 
 function start_server() {
-    (cd "$FILE_BASE"; while ! (go generate && go build -o simple-offline-map *.go); do sleep 1; done)
+    (
+        cd "$FILE_BASE"
+        while ! (go generate && go build -o simple-offline-map ./*.go); do
+            sleep 1
+        done
+    )
     "$FILE_BASE"/simple-offline-map "$@" &
     PID=$!
     echo "go server started ($PID)"
 }
 
 function stop_server() {
-    test -n "$PID" && kill "$PID" || true
+    (test -n "$PID" && kill "$PID") || true
     echo "Killed old server"
 }
 
