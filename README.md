@@ -22,6 +22,15 @@ Planned features (TODO list):
 * Add refreshing of cache
   * For that, we need to store cache metadata, like the etags and max-age
     headers that come from the OSM tile server.
+* Use a real DB (PostgreSQL) instead of SQLite
+* Add authentication and authorization
+* Deployment on some cloud environment
+  * e.g. Google Cloud or Digital Ocean or a German provider
+  * easy deploy and shutdown scripts
+  * deploy script starts up the vm, installs dependencies, starts docker,
+    builds the app images and starts the container(s), and restores the latest
+    backup of the DB and the GPX files
+  * shutdown script creates a backup of the DB and the GPX files, shuts down the vm
 
 
 ## Configuration
