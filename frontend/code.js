@@ -293,6 +293,15 @@ function show_gpx_file(show, file) {
                     if (i==0 || i == points.length-1) {
                         var r = L.marker([lat, lon]).addTo(map);
                         markers.push(r);
+                    } else {
+                        var circle = L.circle([lat,lon], {
+                            color: color,
+                            fillColor: color,
+                            fillOpacity: 0.5,
+                            radius: 1
+                        });
+                        circle.addTo(map);
+                        markers.push(circle);
                     }
                     var latLon = L.latLng(lat, lon);
                     if (i>0) {
