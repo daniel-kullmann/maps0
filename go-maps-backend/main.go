@@ -32,6 +32,7 @@ func main() {
 	router.HandleFunc("/api/settings/", GetSettings).Methods("GET")
 	router.HandleFunc("/api/settings/set_all_settings/", SetSettings).Methods("POST")
 	router.HandleFunc("/{name:.*}", GetFile).Methods("GET")
+	log.Print("Listening on port 9191")
 	log.Fatal(http.ListenAndServe(":9191", router))
 }
 

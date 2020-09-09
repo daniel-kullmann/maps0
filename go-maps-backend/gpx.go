@@ -3,12 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/gorilla/mux"
 )
 
 type Gpx = struct {
@@ -54,6 +55,7 @@ func CreateGpxContent(gpx *Gpx) string {
 
 func SaveGpx(w http.ResponseWriter, r *http.Request) {
 	if len(r.Header["X-Csrftoken"]) == 0 || r.Header["X-Csrftoken"][0] != token {
+		log.Print("No CSRF Token sent")
 		w.WriteHeader(403)
 		return
 	}
@@ -64,6 +66,8 @@ func SaveGpx(w http.ResponseWriter, r *http.Request) {
 	count, err := r.Body.Read(buffer)
 	if err != nil && err != io.EOF {
 		log.Fatal(err)
+		w.Write([]byte("{}"))
+		return
 	}
 	var gpx Gpx
 	err = json.Unmarshal(buffer[0:count], &gpx)
@@ -73,9 +77,11 @@ func SaveGpx(w http.ResponseWriter, r *http.Request) {
 	fh, err := os.Create(GpxBase + fileName)
 	if err != nil {
 		log.Fatal(err)
+	} else {
+		fh.Write([]byte(content))
+		fh.Close()
+		log.Print("GPX file " + GpxBase + filename + " created")
 	}
-	fh.Write([]byte(content))
-	fh.Close()
 	w.Write([]byte("{}"))
 }
 
